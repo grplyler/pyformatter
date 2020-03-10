@@ -9,12 +9,14 @@ class Ui(QtWidgets.QMainWindow):
         uic.loadUi('main.ui', self) # Load the .ui file
         self.show() # Show the GUI
 
-        # Get the UI Elements we Need
+        # Get Globaly used ui elements
+        self.statusBar = self.findChild(QtWidgets.QStatusBar, "statusbar")
+
+        # Get the UI Elements we need for JSON formatting
         self.jsonIndent = self.findChild(QtWidgets.QLineEdit, "jsonIndent")
         self.jsonFormatButton = self.findChild(QtWidgets.QPushButton, "jsonFormatButton")
         self.jsonSourceTextEdit = self.findChild(QtWidgets.QTextEdit, "jsonSourceTextEdit")
         self.jsonDestTextEdit = self.findChild(QtWidgets.QTextEdit, "jsonDestTextEdit")
-        self.statusBar = self.findChild(QtWidgets.QStatusBar, "statusbar")
         self.minifyCheckbox = self.findChild(QtWidgets.QCheckBox, "minifyCheckbox")
 
         # Get UI elements needed for html
@@ -24,15 +26,46 @@ class Ui(QtWidgets.QMainWindow):
         self.htmlMinifyCheckbox = self.findChild(QtWidgets.QCheckBox, "htmlMinifyCheckbox")
         self.htmlIndentLineEdit = self.findChild(QtWidgets.QLineEdit, "htmlIndentLineEdit")
 
+        # Get UI Elements needed for python formatting
+        self.pythonFormatButton = self.findChild(QtWidgets.QPushButton, "pythonFormatButton")
+        self.pythonSourceTextEdit = self.findChild(QtWidgets.QPlainTextEdit, "pythonSourceTextEdit")
+        self.pythonDestTextEdit = self.findChild(QtWidgets.QPlainTextEdit, "pythonDestTextEdit")
+        self.pythonMinifyCheckbox = self.findChild(QtWidgets.QCheckBox, "pythonMinifyCheckbox")
+        self.pythonIndentLineEdit = self.findChild(QtWidgets.QLineEdit, "pythonIndentLineEdit")
+
         # Connect signals and slots
         self.jsonFormatButton.clicked.connect(self.jsonFormatButtonPressed)
         self.htmlFormatButton.clicked.connect(self.htmlFormatButtonPressed)
+        self.pythonFormatButton.clicked.connect(self.pythonFormatButtonPressed)
         
+    # Format Python
+    def pythonFormatButtonPressed(self):
+        # Get Minify Checkbox Value
+        minify = self.pythonMinifyCheckbox.isChecked()
 
-    def run():
-        # Get json indent spaces
-        pass
+        # Get Indent Settings
+        indent = int(self.pythonIndentLineEdit.text())
 
+        # Get Python source
+        source = self.pythonSourceTextEdit.toPlainText()
+
+        # Check that is is python source code
+        if source == "":
+            self.statusBar.showMessage("No Python source supplied")
+
+        else:
+
+            # Do the html formatting
+            formatted = format_python(source)
+            print(formatted)
+
+            # Display the formmated html
+            self.pythonDestTextEdit.setPlainText(formatted)
+
+            # Display message
+            self.statusBar.showMessage("Python code formatted.")
+
+    # Format HTML
     def htmlFormatButtonPressed(self):
         print("HTML Format button pressed")
         

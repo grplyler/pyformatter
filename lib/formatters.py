@@ -1,6 +1,7 @@
 import json
 from bs4 import BeautifulSoup
 import xml.dom.minidom
+from yapf.yapflib.yapf_api import FormatCode
 
 def format_json(source, indent=2, minify=False):
 
@@ -25,9 +26,8 @@ def format_html(source, indent=2):
     soup = BeautifulSoup(source)
     return soup.prettify(indent_width=2)
 
-    # # Format with xml minidom
-    # dom = xml.dom.minidom.parseString(source)
-    # return dom.toprettyxml(" " * indent)
-
-def format_python():
-    pass
+def format_python(source, indent=2):
+    
+    # Format Python with Google's Yapf library
+    formatted = FormatCode(source)[0]
+    return formatted
