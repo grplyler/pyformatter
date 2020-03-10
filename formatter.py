@@ -1,7 +1,6 @@
 from PyQt5 import QtWidgets, uic
 import sys
 import json
-from lib.formatters import format_html, format_python, format_json
 
 class Ui(QtWidgets.QMainWindow):
     def __init__(self):
@@ -41,13 +40,10 @@ class Ui(QtWidgets.QMainWindow):
     # Format Python
     def pythonFormatButtonPressed(self):
         # Get Minify Checkbox Value
-        minify = self.pythonMinifyCheckbox.isChecked()
 
         # Get Indent Settings
-        indent = int(self.pythonIndentLineEdit.text())
 
         # Get Python source
-        source = self.pythonSourceTextEdit.toPlainText()
 
         # Check that is is python source code
         if source == "":
@@ -56,75 +52,52 @@ class Ui(QtWidgets.QMainWindow):
         else:
 
             # Do the html formatting
-            formatted = format_python(source)
-            print(formatted)
 
             # Display the formmated html
-            self.pythonDestTextEdit.setPlainText(formatted)
 
             # Display message
-            self.statusBar.showMessage("Python code formatted.")
 
     # Format HTML
-    def htmlFormatButtonPressed(self):
-        print("HTML Format button pressed")
-        
+    def htmlFormatButtonPressed(self):        
         # Get Minify Checkbox Value
-        minify = self.minifyCheckbox.isChecked()
 
         # Get Indent Settings
-        indent = int(self.htmlIndentLineEdit.text())
 
         # Get HTML source
-        source = self.htmlSourceTextEdit.toPlainText()
 
         # Check that is is html source code
         if source == "":
             self.statusBar.showMessage("No HTML source supplied")
 
         else:
-
             # Do the html formatting
-            formatted = format_html(source)
 
             # Display the formmated html
-            self.htmlDestTextEdit.setPlainText(formatted)
 
             # Display message
-            self.statusBar.showMessage("HTML formatted.")
 
 
     # JSON Format
     def jsonFormatButtonPressed(self):
 
-        minify = self.minifyCheckbox.isChecked()
-        print("minify:", self.minifyCheckbox.isChecked())
-        # Format JSON
+       # Get Minify Checkbox Value
 
-        print("Formatting JSON")
-        indent = int(self.jsonIndent.text())
-        print(indent)
+        # Get Indent Settings
 
         # Get json source
-        jsonSource = self.jsonSourceTextEdit.toPlainText()
-        parsedJson = ""
 
-        # Call our library to do json formatting
-        formatted_json = ""
-
-        if jsonSource == "":
-            self.statusBar.showMessage("JSON Source is Empty")
+        # Check that is is json source code
+        if source == "":
+            self.statusBar.showMessage("No HTML source supplied")
 
         else:
-            try:
-                formatted_json = format_json(jsonSource, indent=indent, minify=minify)
+            # Check for JSON decoding errors
 
-                # Set output
-                self.jsonDestTextEdit.setText(formatted_json)
-            
-            except json.JSONDecodeError as e:
-                # Show Error Message
-                self.statusBar.showMessage("Error Reading JSON: {}".format(e))
+            # Do the json formatting
+
+            # Display the formmated html
+
+            # Display message
 
 
 if __name__ == "__main__":
