@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets, uic
 import sys
 import json
+from lib.formatters import format_html, format_python, format_json
 
 class Ui(QtWidgets.QMainWindow):
     def __init__(self):
@@ -15,16 +16,52 @@ class Ui(QtWidgets.QMainWindow):
         self.jsonDestTextEdit = self.findChild(QtWidgets.QTextEdit, "jsonDestTextEdit")
         self.statusBar = self.findChild(QtWidgets.QStatusBar, "statusbar")
         self.minifyCheckbox = self.findChild(QtWidgets.QCheckBox, "minifyCheckbox")
-        print("JSON Indent Settings:", self.jsonIndent.text())
+
+        # Get UI elements needed for html
+        self.htmlFormatButton = self.findChild(QtWidgets.QPushButton, "htmlFormatButton")
+        self.htmlSourceTextEdit = self.findChild(QtWidgets.QTextEdit, "htmlSourceTextEdit")
+        self.htmlDestTextEdit = self.findChild(QtWidgets.QPlainTextEdit, "htmlDestTextEdit")
+        self.htmlMinifyCheckbox = self.findChild(QtWidgets.QCheckBox, "htmlMinifyCheckbox")
+        self.htmlIndentLineEdit = self.findChild(QtWidgets.QLineEdit, "htmlIndentLineEdit")
 
         # Connect signals and slots
         self.jsonFormatButton.clicked.connect(self.jsonFormatButtonPressed)
+        self.htmlFormatButton.clicked.connect(self.htmlFormatButtonPressed)
         
 
     def run():
         # Get json indent spaces
         pass
 
+    def htmlFormatButtonPressed(self):
+        print("HTML Format button pressed")
+        
+        # Get Minify Checkbox Value
+        minify = self.minifyCheckbox.isChecked()
+
+        # Get Indent Settings
+        indent = int(self.htmlIndentLineEdit.text())
+
+        # Get HTML source
+        source = self.htmlSourceTextEdit.toPlainText()
+
+        # Check that is is html source code
+        if source == "":
+            self.statusBar.showMessage("No HTML source supplied")
+
+        else:
+
+            # Do the html formatting
+            formatted = format_html(source)
+
+            # Display the formmated html
+            self.htmlDestTextEdit.setPlainText(formatted)
+
+            # Display message
+            self.statusBar.showMessage("HTML formatted.")
+
+
+    # JSON Format
     def jsonFormatButtonPressed(self):
 
         minify = self.minifyCheckbox.isChecked()
@@ -39,30 +76,22 @@ class Ui(QtWidgets.QMainWindow):
         jsonSource = self.jsonSourceTextEdit.toPlainText()
         parsedJson = ""
 
-        try:
-            # Load Source Json
-            parsedJson = json.loads(jsonSource)
+        # Call our library to do json formatting
+        formatted_json = ""
 
-            # Format
-            formattedJson = ""
-            if minify:
-                formattedJson = json.dumps(parsedJson, indent=None, separators=(',',':'))
+        if jsonSource == "":
+            self.statusBar.showMessage("JSON Source is Empty")
 
-            else:
-                formattedJson = json.dumps(parsedJson, indent=indent, )
+        else:
+            try:
+                formatted_json = format_json(jsonSource, indent=indent, minify=minify)
 
-            # Set output
-            self.jsonDestTextEdit.setText(formattedJson)
-
-            # Show Message
-            self.statusBar.showMessage("JSON Formatted Sucessfully")
-
-        except json.decoder.JSONDecodeError as e:
-
-            # Show Error Message
-            self.statusBar.showMessage("Error Reading JSON: {}".format(e))
-
-
+                # Set output
+                self.jsonDestTextEdit.setText(formatted_json)
+            
+            except json.JSONDecodeError as e:
+                # Show Error Message
+                self.statusBar.showMessage("Error Reading JSON: {}".format(e))
 
 
 if __name__ == "__main__":
